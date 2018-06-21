@@ -59,11 +59,11 @@ read(10,*) loa_azo         ! loa_azo
 close(10)
 
 allocate(polymer(1:N_chain,0:Nm_pol))
-allocate( w(1:Nr+1,1:Nz), w_new(1:Nr+1,1:Nz),eta_new(1:Nr+1,1:Nz), eta(1:Nr+1,1:Nz))
-allocate( eta_azo_new(1:Nr+1,1:Nz), eta_azo(1:Nr+1,1:Nz) )
-allocate( eta_sub_new(1:Nr+1,1:Nz), eta_sub(1:Nr+1,1:Nz) )
-allocate( ir(1:N_chain,0:Nm_pol), iz(1:N_chain,0:Nm_pol), bond_vector(1:N_chain) )
-allocate( r_a(1:Nr+1), rr_r(1:Nr+1), zz_r(1:Nz))
+allocate(w(1:Nr+1,1:Nz),w_new(1:Nr+1,1:Nz),eta_new(1:Nr+1,1:Nz),eta(1:Nr+1,1:Nz))
+allocate(eta_azo_new(1:Nr+1,1:Nz),eta_azo(1:Nr+1,1:Nz))
+allocate(eta_sub_new(1:Nr+1,1:Nz),eta_sub(1:Nr+1,1:Nz))
+allocate(ir(1:N_chain,0:Nm_pol),iz(1:N_chain,0:Nm_pol),bond_vector(1:N_chain))
+allocate(r_a(1:Nr+1),rr_r(1:Nr+1),zz_r(1:Nz))
 allocate(trial_move_rate(1:4))
 
 trial_move_rate(1) = 0.6d0 ! rate of azo move to sphere move
@@ -201,7 +201,7 @@ end do
 close(45)
 !print*, i_azo,"i_azo"
 
-n_azo = n_azo/2
+n_azo = floor(n_azo/2)
 n_sub = n_azo
 allocate(azo(1:n_azo,0:Nm), ir_azo(1:n_azo,0:Nm), iz_azo(1:n_azo,0:Nm), i_azo(1:n_azo))
 allocate(sub(1:n_sub,0:Nm_sub), ir_sub(1:n_sub,0:Nm_sub), iz_sub(1:n_sub,0:Nm_sub))
@@ -214,9 +214,9 @@ do i = 1, n_azo
 end do
 
 do j=1,n_azo 
-    azo(j,0)%x = graft_point(2*j-1)%x 
-    azo(j,0)%y = graft_point(2*j-1)%y
-    azo(j,0)%z = graft_point(2*j-1)%z
+    azo(j,0)%x = graft_point(2*j)%x 
+    azo(j,0)%y = graft_point(2*j)%y
+    azo(j,0)%z = graft_point(2*j)%z
 	  do i=1,Nm
         change = 0
         if ( i==i_azo(j) ) then      
@@ -228,7 +228,7 @@ do j=1,n_azo
                 change = 0 
                 stop "initial wrong"
             else
-            	  azo(j,i)%x = unew(1)
+            	azo(j,i)%x = unew(1)
                 azo(j,i)%y = unew(2)
                 azo(j,i)%z = unew(3) 
             end if
@@ -242,7 +242,7 @@ do j=1,n_azo
                 change = 0 
                 stop "initial wrong"
             else
-            	  azo(j,i)%x = unew(1)
+            	azo(j,i)%x = unew(1)
                 azo(j,i)%y = unew(2)
                 azo(j,i)%z = unew(3) 
             end if 
@@ -263,7 +263,7 @@ do j=1,n_azo
                 if (r_sphere_2 > r_radius .or. unew(3) > p_sphere_2 ) then     ! jiao die le
                     change = 0 
                 else
-            	      azo(j,i)%x = unew(1)
+            	   azo(j,i)%x = unew(1)
                     azo(j,i)%y = unew(2)
                     azo(j,i)%z = unew(3) 
                     exit
@@ -274,9 +274,9 @@ do j=1,n_azo
 end do
 
 do j=1,n_sub 
-    sub(j,0)%x = graft_point(2*j)%x 
-    sub(j,0)%y = graft_point(2*j)%y
-    sub(j,0)%z = graft_point(2*j)%z
+    sub(j,0)%x = graft_point(2*j + 1)%x 
+    sub(j,0)%y = graft_point(2*j + 1)%y
+    sub(j,0)%z = graft_point(2*j + 1)%z
 	do i=1,Nm_sub
         change = 0
         do while(change == 0)                 ! make sure wall is impentrate
@@ -307,8 +307,8 @@ end do
 !read grafting points
 open(unit=43,file='grafting_points.txt')
 do j=1,N_chain
-	  read(43,*) bond_vector(j)%x,bond_vector(j)%y, bond_vector(j)%z
-	  r_radius = dsqrt( bond_vector(j)%x**2 + bond_vector(j)%y**2 + bond_vector(j)%z**2 )
+	read(43,*) bond_vector(j)%x,bond_vector(j)%y, bond_vector(j)%z
+	r_radius = dsqrt( bond_vector(j)%x**2 + bond_vector(j)%y**2 + bond_vector(j)%z**2 )
     bond_vector(j)%x = bond_vector(j)%x / r_radius
     bond_vector(j)%y = bond_vector(j)%y / r_radius
     bond_vector(j)%Z = bond_vector(j)%z / r_radius
@@ -330,16 +330,16 @@ do j=1,N_chain
             axis(1) = sin_t*dcos(phi)
             axis(2) = sin_t*dsin(phi)
             axis(3) = cos_t
-    		    unew(1) = polymer(j,i-1)%x + axis(1)
-			      unew(2) = polymer(j,i-1)%y + axis(2)
-    	   	  unew(3) = polymer(j,i-1)%z + axis(3) 
+    		unew(1) = polymer(j,i-1)%x + axis(1)
+			unew(2) = polymer(j,i-1)%y + axis(2)
+    	   	unew(3) = polymer(j,i-1)%z + axis(3) 
             r_radius = unew(1)*unew(1) + unew(2)*unew(2) + unew(3)*unew(3)
             if (r_sphere_2 > r_radius .or. unew(3) > p_sphere_2 ) then     ! jiao die le
                 change = 0 
             else
-        		    polymer(j,i)%x = unew(1)
+        		polymer(j,i)%x = unew(1)
                 polymer(j,i)%y = unew(2)
-        		    polymer(j,i)%z = unew(3) 
+        		polymer(j,i)%z = unew(3) 
                 exit
             end if        
         
