@@ -16,8 +16,8 @@ DOUBLE PRECISION :: r, cos_t, sin_t, phi
 DOUBLE PRECISION :: unew(3), uold(3) 
 DOUBLE PRECISION :: alpha, beta, angle, dotp
 DOUBLE PRECISION :: ratio_sigma, a_plane,loa_azo 
-DOUBLE PRECISION, PARAMETER :: TOL = 1.0D-5	
-DOUBLE PRECISION :: r_radius,r_radius_1, zz, rr, temp, x_r, y_r
+DOUBLE PRECISION, PARAMETER :: TOL = 1.0D-5 
+DOUBLE PRECISION :: r_radius,r_radius_1, zz, rr, temp, x_r, y_r, temp_1
 
 
 type(node) :: graft_point(0:401)  
@@ -170,9 +170,12 @@ do while(x_flag == 1)
         graft_point(n_graft_point)%x = temp
         graft_point(n_graft_point)%y = graft_point(n_graft_point-1)%y
         graft_point(n_graft_point)%z = p_sphere_2
-!        print*,  n_graft_point,graft_point(n_graft_point)%x,graft_point(n_graft_point)%y
+        temp_1 = (graft_point(n_graft_point)%x)**2 + (graft_point(n_graft_point)%y)**2 
+        do while(temp_1 <= (2*r_sphere)**2)            
+            graft_point(n_graft_point)%x = graft_point(n_graft_point)%x + a_plane                 
+            temp_1 = (graft_point(n_graft_point)%x)**2 + (graft_point(n_graft_point)%y)**2
+        end do        
         n_graft_point = n_graft_point + 1
-        
     end do    
     temp = graft_point(n_graft_point-1)%y + a_plane*dsqrt(3.0d0)*0.5d0
     if(temp>Lbox)then
@@ -181,15 +184,19 @@ do while(x_flag == 1)
     graft_point(n_graft_point)%x = a_plane*0.5d0 * mod(x_stat,2)
     graft_point(n_graft_point)%y = temp
     graft_point(n_graft_point)%z = p_sphere_2
-!    print*,  n_graft_point,graft_point(n_graft_point)%x,graft_point(n_graft_point)%y
+    temp_1 = (graft_point(n_graft_point)%x)**2 + (graft_point(n_graft_point)%y)**2 
+    do while(temp_1 <= (2*r_sphere)**2)
+        graft_point(n_graft_point)%x = graft_point(n_graft_point)%x + a_plane       
+        temp_1 = (graft_point(n_graft_point)%x)**2 + (graft_point(n_graft_point)%y)**2        
+    end do    
 end do
-n_azo = n_graft_point - 1
+n_azo = n_graft_point - 2
 !print*,  n_azo,"number of substrate-polymers and azo_polymers"
 write(15,*) "number of substrate-polymers and azo_polymers",n_azo
  
 open(unit=45,file='graft_point.txt')
 do i = 1, n_azo   
-    write(45,*) graft_point(i)%x, graft_point(i)%y, graft_point(i)%z
+    write(45,*) graft_point(i+1)%x, graft_point(i+1)%y, graft_point(i+1)%z
 end do
 close(45)
 !print*, i_azo,"i_azo"
@@ -510,5 +517,5 @@ Deallocate(bond_vector)
 !call comformation_write()
 !write(*,*) "CREATED OK"
 
-!stop"ini is ok"
+stop"ini is ok"
 end subroutine initialize          
