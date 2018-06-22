@@ -169,8 +169,8 @@ do while(MCS < 5*NMCs)
     dffff = 0
 
     do j=1,N_azo 
-        if(azo_position>=1.0d0) then
-            i_azo_test = floor((azo_position - 1.0d0) * Nm)    !it is related to azo_position
+        if(azo_position_1>=1.0d0) then
+            i_azo_test = floor((azo_position_1 - 1.0d0) * Nm)    !it is related to azo_position
             dffff = floor( ( p_sphere_2 - azo(j,i_azo_test)%z ) / dz ) + 1      !!!iz_azo(j,Nm)
             if (dffff < 1 .or.  dffff > 500)   then
                 stop "error dffff"

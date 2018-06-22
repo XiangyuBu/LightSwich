@@ -702,8 +702,23 @@ implicit none
 integer :: i, j, flag_c
 double precision :: r
 
-if(i_azo_temp<nm)then
-    do j=1,N_azo
+if(i_azo_temp_1<nm)then
+    do j=1,N_azo/2
+        r = (azo(j,i_azo(j))%x - azo(j,i_azo(j)-1)%x)*(azo(j,i_azo(j)+1)%x - azo(j,i_azo(j))%x)    &
+           +(azo(j,i_azo(j))%y - azo(j,i_azo(j)-1)%y)*(azo(j,i_azo(j)+1)%y - azo(j,i_azo(j))%y)    &
+           +(azo(j,i_azo(j))%z - azo(j,i_azo(j)-1)%z)*(azo(j,i_azo(j)+1)%z - azo(j,i_azo(j))%z) 
+        if( abs(r-dcos(2.0d0*pi/3.0d0))>1.0d-6 )then
+            print*, j, i_azo(j), "i_azo is broken"    
+            print*,azo(j,i_azo(j)-1)%x,azo(j,i_azo(j)-1)%y,azo(j,i_azo(j)-1)%z
+            print*,azo(j,i_azo(j))%x,azo(j,i_azo(j))%y,azo(j,i_azo(j))%z
+            print*,azo(j,i_azo(j)+1)%x,azo(j,i_azo(j)+1)%y,azo(j,i_azo(j)+1)%z
+            stop        
+        end if
+    end do
+end if
+
+if(i_azo_temp_2<nm)then
+    do j=(N_azo/2)+1, N_azo
         r = (azo(j,i_azo(j))%x - azo(j,i_azo(j)-1)%x)*(azo(j,i_azo(j)+1)%x - azo(j,i_azo(j))%x)    &
            +(azo(j,i_azo(j))%y - azo(j,i_azo(j)-1)%y)*(azo(j,i_azo(j)+1)%y - azo(j,i_azo(j))%y)    &
            +(azo(j,i_azo(j))%z - azo(j,i_azo(j)-1)%z)*(azo(j,i_azo(j)+1)%z - azo(j,i_azo(j))%z) 
