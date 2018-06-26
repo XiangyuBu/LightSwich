@@ -11,9 +11,7 @@ type(node) :: new(1:N_chain,0:Nm_pol)
 DOUBLE PRECISION :: r_radius, r, np_r_temp
 DOUBLE PRECISION :: DE2, DE3 
 DOUBLE PRECISION :: z_temp
-DOUBLE PRECISION :: z_move
-
-np_r = 0         
+DOUBLE PRECISION :: z_move         
 DE2 = 0
 z_move = 2.0d0*move_max*(2.0d0*ran2(seed) - 1)      
 change = 1
@@ -30,7 +28,6 @@ do j  = 1,n_azo
     end do
 end do
 
-end do 
 do j = 1,n_chain
     do i = 0, Nm_pol
         new(j,i)%z = polymer(j,i)%z + z_move
@@ -40,7 +37,7 @@ do j = 1,n_chain
         end if
     end do
 end do
-if (change = 1) then
+if (change == 1) then
     do j = 1, n_chain
         do i= 0, Nm_pol
             iz_temp(j,i) = floor( ( Lz_2 + new(j,i)%z ) / dz ) + 1
@@ -53,9 +50,9 @@ if (change = 1) then
     end do
     r = ran2(seed)
     if ( r < dexp ( - deltaS*DE2 ) )then       
+        np_r = np_r_temp
         do j = 1, n_chain
             do i = 0,Nm_pol
-                np_r = np_r_temp
                 polymer(j,i)%z = new(j,i)%z          
                 iz(j,i) = iz_temp(j,i)
             end do
@@ -122,7 +119,7 @@ do j = i+1,Nm
     new(j)%y = azo(jj,i)%y + unew(2)
     new(j)%z = azo(jj,i)%z + unew(3)
     r_radius = new(j)%x*new(j)%x + new(j)%y*new(j)%y &
-             +（new(j)%z - np_r)*(new(j)%z - np_r)
+             +(new(j)%z - np_r)*(new(j)%z - np_r)
 
     if (r_sphere_2 > r_radius .or. abs(new(j)%z) > p_sphere_2  ) then
         change = 0 
@@ -334,7 +331,7 @@ DOUBLE PRECISION :: alpha, beta, angle, dotp
 DOUBLE PRECISION :: DE1, DE2, DE3 
 
 DE1 = 0
-change_1 = 0    
+change_1 = 1    
 cos_t=(2*ran2(seed)-1)*0.99999999d0
 sin_t=dsqrt(1.0d0-cos_t**2) 
 
@@ -351,17 +348,15 @@ do j = 1,n_chain
     do i = 0,Nm_pol     
         uold(1) = polymer(j,i)%x 
         uold(2) = polymer(j,i)%y 
-        uold(3) = polymer(j,i)%z 
+        uold(3) = polymer(j,i)%z - np_r 
                         
         dotp = axis(1)*uold(1) + axis(2)*uold(2) + axis(3)*uold(3)
         new(j,i)%x = uold(1)*alpha + axis(1)*dotp*(1-alpha) + ( uold(2)*axis(3) - uold(3)*axis(2) )*beta
         new(j,i)%y = uold(2)*alpha + axis(2)*dotp*(1-alpha) + ( uold(3)*axis(1) - uold(1)*axis(3) )*beta
-        new(j,i)%z = uold(3)*alpha + axis(3)*dotp*(1-alpha) + ( uold(1)*axis(2) - uold(2)*axis(1) )*beta                
+        new(j,i)%z = uold(3)*alpha + axis(3)*dotp*(1-alpha) + ( uold(1)*axis(2) - uold(2)*axis(1) )*beta + np_r               
         if (abs(new(j,i)%z) > Lz_2 ) then
             change_1 = 0
             exit
-        else
-            change_1 = 1
         end if
     end do
 end do
@@ -383,7 +378,7 @@ else
     end do
 
     r = ran2(seed)
-    if ( r < dexp ( -epsilon*DE1 - deltaS*DE2 ) )then
+    if ( r < dexp ( - deltaS*DE2 ) )then
         do j = 1, n_chain
             do i = 0,Nm_pol          
                 polymer(j,i)%x = new(j,i)%x
@@ -393,11 +388,9 @@ else
                 ir(j,i) = ir_temp(j,i)
             end do
         end do            
-
     else
         change = 0
-    end if
-            
+    end if            
 end if  ! check metroplis
 
 end subroutine rotate_sphere 
@@ -493,7 +486,7 @@ end do
 
 do j= 1, N_azo
 	do i=1, Nm
-    	r = dsqrt(azo(j,i)%z*azo(j,i)%z &
+    	r = dsqrt((azo(j,i)%z-np_r)*(azo(j,i)%z-np_r) &
     			+ azo(j,i)%y*azo(j,i)%y &
     			+ azo(j,i)%x*azo(j,i)%x )
         if ( (r-r_sphere) <= -1.0d-5) then
@@ -505,7 +498,7 @@ do j= 1, N_azo
            stop
         end if
 
-        if ( azo(j,i)%z > p_sphere_2) then
+        if ( abs(azo(j,i)%z) > p_sphere_2) then
            print*, "azomonoer",i,"on chain", j,"overlap substrate"
            print*,azo(j,i)%x
            print*,azo(j,i)%y
@@ -534,8 +527,8 @@ do j = 1, N_chain
 end do
 
 do j= 1, N_chain
-	do i=1, Nm_pol
-    	r = dsqrt(polymer(j,i)%z*polymer(j,i)%z &
+	do i=0, Nm_pol
+    	r = dsqrt((polymer(j,i)%z-np_r)*(polymer(j,i)%z-np_r) &
     			+ polymer(j,i)%y*polymer(j,i)%y &
     			+ polymer(j,i)%x*polymer(j,i)%x )
         if ( (r-r_sphere) <= -1.0d-5) then
@@ -543,18 +536,10 @@ do j= 1, N_chain
            print*,polymer(j,i)%x
            print*,polymer(j,i)%y
            print*,polymer(j,i)%z
+           print*,np_r
            flag_c = 1
            stop
-        end if
-
-        if ( polymer(j,i)%z > p_sphere_2) then
-           print*, "monoer",i,"on chain", j,"overlap substrate"
-           print*,polymer(j,i)%x
-           print*,polymer(j,i)%y
-           print*,polymer(j,i)%z
-           flag_c = 1
-           stop
-       end if        
+        end if       
     end do
 end do
 end subroutine checkpolymer

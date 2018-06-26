@@ -100,7 +100,7 @@ deltaS = 1.0d0*Loa/Nm
 r_sphere = roL*Nm                                   
 r_sphere_2 = r_sphere*r_sphere
 
-Lr = Nm*(roL+1)
+Lr = Nm*(roL+0.3d0)
 !Lz = Nm*(roL+1+csoL)  
 Lz = Nm*(roL+7.25+csoL) 
 Lz_2 = 0.5d0*Lz
@@ -133,7 +133,7 @@ w = 0
 w_new = 0
 eta = 0
 eta_azo = 0
-
+np_r = 0
 inquire(file='wfield.txt',exist=alive) 
 if(alive) then                          
     open(unit=42,file='wfield.txt',status='old')
@@ -362,7 +362,7 @@ do j=1,N_chain
 			unew(2) = polymer(j,i-1)%y + axis(2)
     	   	unew(3) = polymer(j,i-1)%z + axis(3) 
             r_radius = unew(1)*unew(1) + unew(2)*unew(2) + unew(3)*unew(3)
-            if (r_sphere_2 > r_radius .or. unew(3) > p_sphere_2 ) then     ! jiao die le
+            if (r_sphere_2 > r_radius .or. abs(unew(3)) > p_sphere_2 ) then     ! jiao die le
                 change = 0 
             else
         		polymer(j,i)%x = unew(1)
@@ -376,7 +376,7 @@ do j=1,N_chain
 end do
 
 
-!call checkpolymer (flag_c)
+call checkpolymer (flag_c)
 
 
 open(22,file='iriz.dat')
@@ -418,7 +418,7 @@ end do
 close(22)
 
 !print*,"initial OK"
-length = 1000
+length = 100000
 
 j=0
 do i=1,length
@@ -434,7 +434,7 @@ do i=1,length
  
 end do
 call checkpolymer (flag_c)
-!print*, 1.0d0*j/length,"sphere moved"
+print*, 1.0d0*j/length,"sphere moved"
  
 j=0
 do i=1,length
@@ -445,7 +445,7 @@ do i=1,length
     end if
 end do
 call checkpolymer (flag_c)
-!print*, 1.0d0*j/length,"pivot azo"
+print*, 1.0d0*j/length,"pivot azo"
 
  
 j=0
@@ -457,7 +457,7 @@ do i=1,length
     end if
 end do
 call checkpolymer (flag_c)
-!print*, 1.0d0*j/length,"pivot move" 
+print*, 1.0d0*j/length,"pivot move" 
 
 
 
@@ -470,7 +470,7 @@ do i=1,length
     end if 
 end do
 call checkpolymer (flag_c)
-!print*, 1.0d0 * j/length,"rotate move"
+print*, 1.0d0 * j/length,"rotate move"
 
 open(unit=50,file='azo_ini.txt')
 open(unit=52,file='pol_ini.txt')

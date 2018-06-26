@@ -6,8 +6,8 @@ implicit none
 
 Integer :: i, j, k,j_temp, is,ii, rotate_i 
 integer :: change ! change is the flag of MC, 1 for accepte the move.
-integer :: i_move,i_rotate, i_pivot, i_small, i_substrate
-integer :: n_move,n_rotate, n_pivot, n_small, n_substrate 
+integer :: i_move,i_rotate, i_pivot, i_small
+integer :: n_move,n_rotate, n_pivot, n_small 
 integer :: flag_c
 DOUBLE PRECISION, PARAMETER :: TOL = 1.5D-3
 DOUBLE PRECISION :: E2_test
@@ -31,18 +31,15 @@ do n_iter = 1, Max_iter
         n_rotate = 0 
         n_pivot = 0
         n_small = 0
-        n_substrate = 0
         i_move = 0
         i_rotate = 0 
         i_pivot = 0
         i_small = 0
-        i_substrate = 0
         
        
         do while(N_pre < Npre)              
             r = ran2(seed)
-            if ( r>trial_move_rate(1) ) then
-            
+            if ( r>trial_move_rate(1) ) then            
                 r = ran2(seed)
                 if ( r<trial_move_rate(2) ) then
                     n_pivot = n_pivot + 1
@@ -66,22 +63,12 @@ do n_iter = 1, Max_iter
                         i_move = i_move + 1
                     end if 
 
-                end if
-                 
+                end if                 
             else
                 r = ran2(seed)
-                if ( r<trial_move_rate(4) ) then 
-                    n_small = n_small + 1
-                    call pivot_azo(change)
-                    if (change == 1) then
-                        i_small = i_small + 1
-                    end if 
-                else
-                    n_substrate = n_substrate + 1
-                    call pivot_sub(change)
-                    if (change == 1) then
-                        i_substrate = i_substrate + 1
-                    end if
+                call pivot_azo(change)
+                if (change == 1) then
+                    i_small = i_small + 1
                 end if                       
             end if 
             
@@ -93,7 +80,6 @@ do n_iter = 1, Max_iter
         write(15,*) i_rotate, 1.0d0 * i_rotate/n_rotate,"rotate move"
         write(15,*) i_pivot, 1.0d0 * i_pivot/n_pivot,"pivot move"    
         write(15,*) i_small, 1.0d0 * i_small/n_small,"azo move"
-        write(15,*) i_substrate, 1.0d0 * i_substrate/n_substrate,"sub move" 
 !! find out w_new
     
     MCS = 0
@@ -123,11 +109,7 @@ do n_iter = 1, Max_iter
                 end if
             else
                 r = ran2(seed)
-                if ( r<trial_move_rate(4) ) then
-                    call pivot_azo(change)
-                else
-                    call pivot_sub(change)
-                end if
+                call pivot_azo(change)
             end if 
      
             if(change == 1)then
@@ -135,12 +117,12 @@ do n_iter = 1, Max_iter
             end if  
         end do   
     
-        do j=1,N_chain
-            do i=1,Nm_pol
-                density(ir(j,i),iz(j,i)) = density(ir(j,i),iz(j,i)) + 1                
-            end do
-            density_end_1(ir(j,Nm_pol),iz(j,Nm_pol)) = density_end_1(ir(j,Nm_pol),iz(j,Nm_pol)) + 1
-        end do
+!        do j=1,N_chain
+!            do i=1,Nm_pol
+!                density(ir(j,i),iz(j,i)) = density(ir(j,i),iz(j,i)) + 1                
+!            end do
+!            density_end_1(ir(j,Nm_pol),iz(j,Nm_pol)) = density_end_1(ir(j,Nm_pol),iz(j,Nm_pol)) + 1
+!        end do
 
         do j=1,N_azo
             do i=1,Nm
@@ -149,40 +131,31 @@ do n_iter = 1, Max_iter
                 density_end_2(ir_azo(j,Nm),iz_azo(j,Nm)) = density_end_2(ir_azo(j,Nm),iz_azo(j,Nm)) + 4
         end do
 
-        do j=1,N_sub
-            do i=1,Nm_sub
-                density(ir_sub(j,i),iz_sub(j,i)) = density(ir_sub(j,i),iz_sub(j,i)) + 4                
-            end do
-                density_end_3(ir_sub(j,Nm_sub),iz_sub(j,Nm_sub)) = density_end_3(ir_sub(j,Nm_sub),iz_sub(j,Nm_sub)) + 4    
-        end do
-    
     end do   ! MCS
 
     density = deltaS*density / MCS 
-    density_end_1 = density_end_1 / MCS 
+!    density_end_1 = density_end_1 / MCS 
     density_end_2 = density_end_2 / MCS 
-    density_end_3 = density_end_3 / MCS
 
     do j=1,nz
         do i=1,nr  
             density (i,j) = density (i,j)/( r_a(i)*r_dr*r_dz )
-            density_end_1 (i,j) = density_end_1 (i,j)/( r_a(i)*r_dr*r_dz )
+!            density_end_1 (i,j) = density_end_1 (i,j)/( r_a(i)*r_dr*r_dz )
             density_end_2 (i,j) = density_end_2 (i,j)/( r_a(i)*r_dr*r_dz )
-            density_end_3 (i,j) = density_end_3 (i,j)/( r_a(i)*r_dr*r_dz )
         end do
     end do
 
     w_new = nu * density
-    eta_new = tau * density_end_2
-    eta_azo_new = tau * density_end_1
+!    eta_new = tau * density_end_2
+!    eta_azo_new = tau * density_end_1
    ! compute erros
     w_erro = 0
 
     do j = 1, Nz
         do i = 1, Nr
-            w_erro = w_erro + abs(w_new(i,j) - w(i,j)) &
-                            + abs(eta_new(i,j) - eta(i,j)) &
-                            + abs(eta_azo_new(i,j) - eta_azo(i,j)) 
+            w_erro = w_erro + abs(w_new(i,j) - w(i,j)) 
+!                            + abs(eta_new(i,j) - eta(i,j)) &
+!                            + abs(eta_azo_new(i,j) - eta_azo(i,j)) 
        end do
     end do
  
@@ -196,7 +169,7 @@ if ( n_iter == 1 ) then
     open(unit=33,file='density_raw.dat')    
         do j = 1, Nz
             do i = 1, 4*Nr/5
-                write(33,"(7E25.13)") rr_r(i), zz_r(j), density(i,j),density_end_1 (i,j),density_end_2 (i,j),density_end_3 (i,j)
+                write(33,"(7E25.13)") rr_r(i), zz_r(j), density(i,j),density_end_2 (i,j)
            end do
         end do                   
     close(33)
@@ -224,7 +197,7 @@ end if
         open(unit=61,file='w.ome')
         do j = 1, Nz
             do i = 1, Nr
-		            write(61,*)  w(i,j), eta(i,j), eta_azo(i,j)
+		            write(61,*) w(i,j)
 	          end do
         end do
         close(61)
@@ -233,13 +206,13 @@ end if
     
     !simple mixing scheme
     w = lambda*w_new + (1-lambda)*w
-    eta = 0.5d0*lambda*eta_new + 0.5d0*(1-lambda)*eta
-    eta_azo = 0.5d0*lambda*eta_azo_new + 0.5d0*(1-lambda)*eta_azo
+!    eta = 0.5d0*lambda*eta_new + 0.5d0*(1-lambda)*eta
+!    eta_azo = 0.5d0*lambda*eta_azo_new + 0.5d0*(1-lambda)*eta_azo
     ! boundary condition
     do j=1,nz
        w(nr+1,j) = w(nr,j)
-       eta(nr+1,j) = eta(nr,j)
-       eta_azo(nr+1,j) = eta_azo(nr,j)
+!       eta(nr+1,j) = eta(nr,j)
+!       eta_azo(nr+1,j) = eta_azo(nr,j)
     end do
         
  

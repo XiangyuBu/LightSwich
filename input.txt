@@ -1,12 +1,12 @@
 0.4        !azo_position1     ! azo position / L from the free end
-0.4		   !azo_position2     ! azo position / L from the free end
-0.4d0      ! ratio_sigma grafting density ratio between substrate and sphere sigma_p/sigma_s
+1.4		   !azo_position2     ! azo position / L from the free end
+1.0d0      ! ratio_sigma grafting density ratio between substrate and sphere sigma_p/sigma_s
 1.0d0      ! csoL   distance between surfaces of substrate and center of sphere / L
 0.80d0             ! end interaction parameter
 0.2d0              ! interaction parameter 
 2.0d0              ! L/a
 0.25d0             ! radius of sphere/L
-1.5                ! redius of the hole 1
+1.2                ! redius of the hole 1
 42                 ! number of grafted chains
 0.1d0              ! mixing parameter
 80                 ! number of bonds
