@@ -19,8 +19,8 @@ Integer :: Nm_sub, N_sub, Nm_pol
 Integer :: Nz, Nr, i_interface
 Integer :: Movestep    !each MC attempt move
 Integer :: num
-Double Precision :: dr, Lr, Lz, Lz_2, dz, L_interface
-Double Precision :: r_sphere_2,r_sphere, roL, rho_0 
+Double Precision :: dr, Lr, Lz, Lz_2, dz, L_interface, np_r
+Double Precision :: r_sphere_2,r_sphere, roL, rho_0
 Double Precision :: move_max, rotate, rotate_s,hahah,csoL
 
 Integer, DIMENSION(:,:), ALLOCATABLE :: ir, iz, ir_azo, iz_azo, ir_sub, iz_sub

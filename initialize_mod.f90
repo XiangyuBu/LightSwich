@@ -418,7 +418,7 @@ end do
 close(22)
 
 !print*,"initial OK"
-length = 0
+length = 1000
 
 j=0
 do i=1,length
