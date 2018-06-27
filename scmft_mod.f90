@@ -180,6 +180,12 @@ end if
     errodown = -1.0d0
     erro(n_iter) = w_erro
     if (w_erro<TOL .and. n_iter>3) then
+        do j = 1, Nz
+            do i = 1, Nr
+                    write(61,*) w(i,j)
+              end do
+        end do
+        close(61)
         exit
     end if
     
