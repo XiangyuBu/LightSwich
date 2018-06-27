@@ -40,15 +40,17 @@ open(unit=83,file='polymer_end.txt')
 open(unit=85,file='azobond.txt')
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-open(unit=100,file='w.ome')
 
-!    call SCMFT()
+!open(unit=100,file='w.ome')
 
-do j = 1, Nz
-    do i = 1, Nr
-		read(100,*)  w(i,j)
-	end do
-end do
+    call SCMFT()
+
+!do j = 1, Nz
+!    do i = 1, Nr
+!		read(100,*)  w(i,j)
+!	end do
+!end do
+
 close(100)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  
 MCS = 0

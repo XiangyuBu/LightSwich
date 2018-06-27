@@ -418,7 +418,7 @@ end do
 close(22)
 
 !print*,"initial OK"
-length = 100000
+length = 1
 
 j=0
 do i=1,length
@@ -494,5 +494,4 @@ Deallocate(bond_vector)
 !call comformation_write()
 !write(*,*) "CREATED OK"
 
-stop"ini is ok"
 end subroutine initialize          

@@ -1,5 +1,5 @@
 #PBS -S /bin/bash
-#PBS -N pol06
+#PBS -N hole1
 #PBS -o job.pbo
 #PBS -j oe
 #PBS -q workq
@@ -7,7 +7,7 @@
 #PBS -l walltime=9999:00:00
 #PBS -V
 #-----------------------------------------------------------------------
-jobname="pol06"
+jobname="hole1"
 cd $PBS_O_WORKDIR
 #-----------------------------------------------------------------------
 echo "Number of cores: 1"
