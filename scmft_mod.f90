@@ -76,10 +76,11 @@ do n_iter = 1, Max_iter
                 N_pre = 1 + N_pre         
             end if
         end do  
-        write(15,*) i_move, 1.0d0 * i_move/n_move,"sphere move"
-        write(15,*) i_rotate, 1.0d0 * i_rotate/n_rotate,"rotate move"
-        write(15,*) i_pivot, 1.0d0 * i_pivot/n_pivot,"pivot move"    
-        write(15,*) i_small, 1.0d0 * i_small/n_small,"azo move"
+!        write(15,*) i_move, 1.0d0 * i_move/n_move,"sphere move"
+!        write(15,*) i_rotate, 1.0d0 * i_rotate/n_rotate,"rotate move"
+!        write(15,*) i_pivot, 1.0d0 * i_pivot/n_pivot,"pivot move"    
+!        write(15,*) i_small, 1.0d0 * i_small/n_small,"azo move"
+!        print*,"pre is ok"
 !! find out w_new
     
     MCS = 0
@@ -88,8 +89,8 @@ do n_iter = 1, Max_iter
     density_end_2 = 0
     density_end_3 = 0
 
-    do while(MCS < NMCs)
-               
+    do while(MCS < NMCs)      
+        
         MCS = MCS + 1
   
         moves = 0
@@ -116,7 +117,6 @@ do n_iter = 1, Max_iter
                 moves = 1 + moves         
             end if  
         end do   
-    
 !        do j=1,N_chain
 !            do i=1,Nm_pol
 !                density(ir(j,i),iz(j,i)) = density(ir(j,i),iz(j,i)) + 1                
