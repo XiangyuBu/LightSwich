@@ -180,6 +180,7 @@ end if
     errodown = -1.0d0
     erro(n_iter) = w_erro
     if (w_erro<TOL .and. n_iter>3) then
+        open(unit=61,file='w.ome')
         do j = 1, Nz
             do i = 1, Nr
                     write(61,*) w(i,j)
