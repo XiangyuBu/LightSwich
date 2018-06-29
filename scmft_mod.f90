@@ -125,10 +125,10 @@ do n_iter = 1, Max_iter
 !        end do
 
         do j=1,N_azo
-            do i=1,Nm
+            do i=1,Nm_azo
                 density(ir_azo(j,i),iz_azo(j,i)) = density(ir_azo(j,i),iz_azo(j,i)) + 4                
             end do
-                density_end_2(ir_azo(j,Nm),iz_azo(j,Nm)) = density_end_2(ir_azo(j,Nm),iz_azo(j,Nm)) + 4
+                density_end_2(ir_azo(j,Nm_azo),iz_azo(j,Nm_azo)) = density_end_2(ir_azo(j,Nm_azo),iz_azo(j,Nm_azo)) + 4
         end do
 
     end do   ! MCS
@@ -165,26 +165,38 @@ do n_iter = 1, Max_iter
 
 
 
-if ( n_iter == 1 ) then
-    open(unit=33,file='density_raw.dat')    
-        do j = 1, Nz
-            do i = 1, 4*Nr/5
-                write(33,"(7E25.13)") rr_r(i), zz_r(j), density(i,j),density_end_2 (i,j)
-           end do
-        end do                   
-    close(33)
-end if
+    if ( n_iter == 1 ) then
+        open(unit=33,file='density_raw.dat')    
+            do j = 1, Nz
+                do i = 1, 4*Nr/5
+                    write(33,"(7E25.13)") rr_r(i), zz_r(j), density(i,j),density_end_2 (i,j)
+                end do
+            end do                   
+        close(33)
+    end if
 
 
 !stop "first scft"
+
+    if ( mod(n_iter,5) == 0 ) then
+        open(unit=61,file='w.ome')
+        do j = 1, Nz
+            do i = 1, Nr
+                write(61,*) n_iter, w(i,j)
+            end do
+        end do
+        close(61)
+    end if
+
+
     errodown = -1.0d0
     erro(n_iter) = w_erro
     if (w_erro<TOL .and. n_iter>3) then
         open(unit=61,file='w.ome')
         do j = 1, Nz
             do i = 1, Nr
-                    write(61,*) w(i,j)
-              end do
+                write(61,*) w(i,j)
+            end do
         end do
         close(61)
         exit

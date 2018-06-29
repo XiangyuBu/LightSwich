@@ -15,7 +15,7 @@ type(node),allocatable :: azo(:,:)         !azo-polymer in the substrate
 type(node),allocatable :: sub(:,:)
 
 Integer :: Nm, N_chain, N_azo, jj, i_azo_temp_1, i_azo_temp_2 ! jj is the chain will be rotated
-Integer :: Nm_sub, N_sub, Nm_pol
+Integer :: Nm_azo, N_sub, Nm_pol
 Integer :: Nz, Nr, i_interface
 Integer :: Movestep    !each MC attempt move
 Integer :: num

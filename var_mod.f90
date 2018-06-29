@@ -51,7 +51,7 @@ open(unit=85,file='azobond.txt')
 !	end do
 !end do
 
-close(100)
+!close(100)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  
 MCS = 0
 density = 0
@@ -153,7 +153,7 @@ do while(MCS < 5*NMCs)
 
     do j=1,N_azo 
         if(azo_position_1>=1.0d0) then
-            i_azo_test = floor((azo_position_1 - 1.0d0) * Nm)    !it is related to azo_position
+            i_azo_test = floor((azo_position_1 - 1.0d0) * Nm_azo)    !it is related to azo_position
             dffff = floor( ( Lz_2 + azo(j,i_azo_test)%z ) / dz ) + 1      !!!iz_azo(j,Nm)
             if (dffff < 1 .or.  dffff > 500)   then
                 stop "error dffff"
@@ -179,7 +179,7 @@ do while(MCS < 5*NMCs)
 
     dff = 0
     do j=1,N_azo
-            dff = floor( ( Lz_2 + azo(j,Nm)%z ) / dz ) + 1      !!!iz_azo(j,Nm)
+            dff = floor( ( Lz_2 + azo(j,Nm_azo)%z ) / dz ) + 1      !!!iz_azo(j,Nm)
             if (dff < 1 .or.  dff > 500)   then
                 stop "error dff"
             end if
@@ -207,10 +207,10 @@ do while(MCS < 5*NMCs)
 !    end do
 
     do j=1,N_azo
-        do i=1,Nm
+        do i=1,Nm_azo
             density_azo(ir_azo(j,i),iz_azo(j,i)) = density_azo(ir_azo(j,i),iz_azo(j,i)) + 4                
         end do
-            density_end_2(ir_azo(j,Nm),iz_azo(j,Nm)) = density_end_2(ir_azo(j,Nm),iz_azo(j,Nm)) + 4
+            density_end_2(ir_azo(j,Nm_azo),iz_azo(j,Nm_azo)) = density_end_2(ir_azo(j,Nm_azo),iz_azo(j,Nm_azo)) + 4
     end do
   
 end do   ! MCS
@@ -325,7 +325,7 @@ close(85)
 !write(44,"(6E25.13)") hahah, csoL, rhorho, End1_End2
 
 do j=1,N_azo
-    do i=0,Nm
+    do i=0,Nm_azo
         write(61,*)  azo(j,i)%x, azo(j,i)%y, azo(j,i)%z
     end do
 end do

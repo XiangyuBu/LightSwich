@@ -18,7 +18,7 @@ change = 1
 
 np_r_temp = np_r + z_move
 do j  = 1,n_azo
-    do i = 0,nm
+    do i = 0,Nm_azo
         r_radius = (azo(j,i)%x)*(azo(j,i)%x) + (azo(j,i)%y)*(azo(j,i)%y)  &
                  + (azo(j,i)%z - np_r_temp)*(azo(j,i)%z - np_r_temp)
         if (r_sphere_2 > r_radius) then
@@ -84,7 +84,7 @@ DOUBLE PRECISION :: DE1, DE2, DE3
 change = 1
     !this is the big MC move
 jj = floor( ran2(seed)*0.9999999d0*(N_azo) ) + 1 ! random pickup the chain in [1,N_azo] to be rotated 
-i = floor(ran2(seed)*0.9999999d0*Nm)  ! random pickup the monomer in [0,Nm-1] to be rotated         
+i = floor(ran2(seed)*0.9999999d0*Nm_azo)  ! random pickup the monomer in [0,Nm-1] to be rotated         
 
 if ( i/= i_azo(jj) )then
     cos_t=(2*ran2(seed)-1)*0.99999999d0
@@ -105,7 +105,7 @@ angle = rotate*(2*ran2(seed) - 1)*pi      !generate angle of phi \in (-pi,+pi)
 alpha = dcos(angle)
 beta = dsin(angle)
 
-do j = i+1,Nm     
+do j = i+1,Nm_azo     
     uold(1) = azo(jj,j)%x - azo(jj,i)%x
     uold(2) = azo(jj,j)%y - azo(jj,i)%y
     uold(3) = azo(jj,j)%z - azo(jj,i)%z
@@ -143,7 +143,7 @@ if (change == 1) then
 
     DE2 = 0.0d0    
     
-    do j = i+1, Nm
+    do j = i+1, Nm_azo
         if ( new(j)%x<=Lbox .and. new(j)%y<=Lbox ) then
             x_r = new(j)%x
             y_r = new(j)%y             
@@ -176,7 +176,7 @@ if (change == 1) then
    
     if ( r < dexp ( -epsilon_azo*DE1 - deltaS*DE2 ))then
 
-        do j = i+1,Nm          
+        do j = i+1,Nm_azo          
             azo(jj,j)%x = new(j)%x
             azo(jj,j)%y = new(j)%y
             azo(jj,j)%z = new(j)%z
@@ -211,7 +211,7 @@ DOUBLE PRECISION :: DE1, DE2, DE3
 change = 1
 
 do j  = 1,n_azo
-    do i = 0,nm
+    do i = 0,Nm_azo
         r_radius = (azo(j,i)%x)*(azo(j,i)%x) + (azo(j,i)%y)*(azo(j,i)%y)  &
                  + (azo(j,i)%z - np_r)*(azo(j,i)%z - np_r)
         if (r_sphere_2 > r_radius) then
@@ -438,7 +438,7 @@ implicit none
 integer :: i, j, flag_c
 double precision :: r
 
-if(i_azo_temp_1<nm)then
+if(i_azo_temp_1<Nm_azo)then
     do j=1,N_azo/2
         r = (azo(j,i_azo(j))%x - azo(j,i_azo(j)-1)%x)*(azo(j,i_azo(j)+1)%x - azo(j,i_azo(j))%x)    &
            +(azo(j,i_azo(j))%y - azo(j,i_azo(j)-1)%y)*(azo(j,i_azo(j)+1)%y - azo(j,i_azo(j))%y)    &
@@ -453,7 +453,7 @@ if(i_azo_temp_1<nm)then
     end do
 end if
 
-if(i_azo_temp_2<nm)then
+if(i_azo_temp_2<Nm_azo)then
     do j=(N_azo/2)+1, N_azo
         r = (azo(j,i_azo(j))%x - azo(j,i_azo(j)-1)%x)*(azo(j,i_azo(j)+1)%x - azo(j,i_azo(j))%x)    &
            +(azo(j,i_azo(j))%y - azo(j,i_azo(j)-1)%y)*(azo(j,i_azo(j)+1)%y - azo(j,i_azo(j))%y)    &
@@ -469,7 +469,7 @@ if(i_azo_temp_2<nm)then
 end if
 
 do j = 1, N_azo
-	do i=1, Nm
+	do i=1, Nm_azo
 		r = (azo(j,i)%x - azo(j,i-1)%x)**2    &
 			+(azo(j,i)%y - azo(j,i-1)%y)**2    &
        		+(azo(j,i)%z - azo(j,i-1)%z)**2         
@@ -485,7 +485,7 @@ do j = 1, N_azo
 end do
 
 do j= 1, N_azo
-	do i=1, Nm
+	do i=1, Nm_azo
     	r = dsqrt((azo(j,i)%z-np_r)*(azo(j,i)%z-np_r) &
     			+ azo(j,i)%y*azo(j,i)%y &
     			+ azo(j,i)%x*azo(j,i)%x )
@@ -572,14 +572,14 @@ implicit none
 integer :: i,j
 open(unit=27,file='azo_ini.txt')
 do j=1,n_azo
-    do i=0,nm
+    do i=0,Nm_azo
         write(27,*) azo(j,i)%x, azo(j,i)%y,azo(j,i)%z
     end do
 end do
 close(27)
 open(unit=27,file='polymer_ini.txt')
-do j=1,n_azo
-    do i=0,nm
+do j=1,N_chain
+    do i=0,Nm_pol
         write(27,*) polymer(j,i)%x, polymer(j,i)%y,polymer(j,i)%z
     end do
 end do
@@ -627,7 +627,7 @@ do j=1,N_azo
     res=res2 // res1 // res0 // '.dat'
     open(4,file=res,status='new')
  
-	do i=0,nm
+	do i=0,Nm_azo
     	!write(4,"(A4,27X,F7.3,1X,F7.3,1X,F7.3)") "ATOM",azo(j,i)%x,azo(j,i)%y,azo(j,i)%z
     	write(4,*) azo(j,i)%x,azo(j,i)%y,azo(j,i)%z
 	end do

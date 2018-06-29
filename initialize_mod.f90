@@ -43,6 +43,7 @@ read(10,*) r_hole          ! radius of the hole
 read(10,*) N_chain         ! number of grafted chains
 read(10,*) lambda          ! mixing parameter
 read(10,*) Nm              ! number of bonds
+read(10,*) Nm_azo          ! number of bonds of azo-polymers
 read(10,*) Nm_pol          ! number of polymer's bonds
 read(10,*) index_con       ! number of conformations  
 read(10,*) Nr              ! number of points in r direction
@@ -73,15 +74,15 @@ trial_move_rate(4) = 0.5d0
 !trial_move_rate(3) = 1.d0 for the position of sphere is fixed.
 
 
-NMCs = 5*10**index_con
-
+!NMCs = 5*10**index_con
+NMCs = 3*10**index_con
 
 
 !!!!!!!!!!!!!!!!!!
 ! calculate rho_0
 !!!!!!!!!!!!!!!!!!!!!
 !rho_0 = 1.0d0*Nm * (4*n_azo + N_chain) / (4*Nz*Nr*Nr )
-rho_0 = 1.0d0*(4*n_azo*nm + N_chain*Nm_pol) / (4*Nz*Nr*Nr )
+rho_0 = 1.0d0*(4*n_azo*Nm_azo + N_chain*Nm_pol) / (4*Nz*Nr*Nr )
 write(15,*) "rho_0", rho_0
 
 !!!!!!!!!!!!!!!!!!!!!
@@ -100,7 +101,7 @@ deltaS = 1.0d0*Loa/Nm
 r_sphere = roL*Nm                                   
 r_sphere_2 = r_sphere*r_sphere
 
-Lr = Nm*(roL+0.3d0)
+Lr = Nm*(roL+0.75d0)
 !Lz = Nm*(roL+1+csoL)  
 Lz = Nm*(roL+7.25+csoL) 
 Lz_2 = 0.5d0*Lz
@@ -204,22 +205,22 @@ do i = (n_azo/2)+1,n_azo
 end do 
 close(45)
 
-allocate(azo(1:n_azo,0:Nm), ir_azo(1:n_azo,0:Nm), iz_azo(1:n_azo,0:Nm), i_azo(1:n_azo))
+allocate(azo(1:n_azo,0:Nm_azo), ir_azo(1:n_azo,0:Nm_azo), iz_azo(1:n_azo,0:Nm_azo), i_azo(1:n_azo))
 
-i_azo_temp_1 = floor(azo_position_1*Nm) !this is used in the file of utility ,line 551.
-i_azo_temp_2 = floor(azo_position_2*Nm)
-i_azo = Nm + 1
+i_azo_temp_1 = floor(azo_position_1*Nm_azo) !this is used in the file of utility ,line 551.
+i_azo_temp_2 = floor(azo_position_2*Nm_azo)
+i_azo = Nm_azo + 1
 do i = 1, n_azo/2 
-    i_azo(i) = floor(azo_position_1*Nm)     
+    i_azo(i) = floor(azo_position_1*Nm_azo)     
 end do
 do i = (n_azo/2)+1,n_azo
-    i_azo(i) = floor(azo_position_2*Nm)
+    i_azo(i) = floor(azo_position_2*Nm_azo)
 end do
 do j=1,n_azo/2 
     azo(j,0)%x = graft_point(j+1)%x 
     azo(j,0)%y = graft_point(j+1)%y
     azo(j,0)%z = graft_point(j+1)%z
-	do i=1,Nm
+	do i=1,Nm_azo
         change = 0
         if ( i==i_azo(j) ) then      
             unew(1) = azo(j,i-1)%x + 1.0d0
@@ -277,7 +278,7 @@ do j=(n_azo/2)+1,n_azo
     azo(j,0)%x = graft_point(j-n_azo/2+1)%x 
     azo(j,0)%y = graft_point(j-n_azo/2+1)%y
     azo(j,0)%z = -graft_point(j-n_azo/2+1)%z
-    do i=1,Nm
+    do i=1,Nm_azo
         change = 0
         if ( i==i_azo(j) ) then      
             unew(1) = azo(j,i-1)%x + 1.0d0
@@ -391,7 +392,7 @@ end do
 close(22)
 open(22,file='iriz_azo.dat')
 do j=1,N_azo
-	do i=1,Nm
+	do i=1,Nm_azo
         if ( azo(j,i)%x<=Lbox .and. azo(j,i)%y<=Lbox ) then
             x_r = azo(j,i)%x
             y_r = azo(j,i)%y             
@@ -475,7 +476,7 @@ print*, 1.0d0 * j/length,"rotate move"
 open(unit=50,file='azo_ini.txt')
 open(unit=52,file='pol_ini.txt')
 do j=1,n_azo
-    do i=0,nm
+    do i=0,Nm_azo
         write(50,*) azo(j,i)%x, azo(j,i)%y, azo(j,i)%z
     end do
 end do
