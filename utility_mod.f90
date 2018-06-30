@@ -257,7 +257,7 @@ do j = i+1,Nm_pol
     r_radius = new(j-i)%x*new(j-i)%x + new(j-i)%y*new(j-i)%y &
              + (new(j-i)%z - np_r)*(new(j-i)%z - np_r)
 
-    if (r_sphere_2 > r_radius) then
+    if (r_sphere_2 > r_radius .or. abs(new(j-i)%z) > Lz_2) then
         change = 0 
         exit
     end if
