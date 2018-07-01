@@ -151,8 +151,25 @@ do while(MCS < 5*NMCs)
 
     dffff = 0
 
-    do j=1,N_azo 
+    do j=1,N_azo/2 
         if(azo_position_1>=1.0d0) then
+            i_azo_test = floor((azo_position_1 - 1.0d0) * Nm_azo)    !it is related to azo_position
+            dffff = floor( ( Lz_2 + azo(j,i_azo_test)%z ) / dz ) + 1      !!!iz_azo(j,Nm)
+            if (dffff < 1 .or.  dffff > 500)   then
+                stop "error dffff"
+            end if
+            ppppp(dffff) = ppppp(dffff) + 1   
+        else
+            dffff = floor( ( Lz_2 + azo(j,i_azo(j))%z ) / dz ) + 1      !!!iz_azo(j,Nm)
+            if (dffff < 1 .or.  dffff > 500)   then
+                stop "error dffff"
+            end if
+            ppppp(dffff) = ppppp(dffff) + 1
+        end if
+    end do
+
+    do j=(N_azo/2) + 1, N_azo
+        if(azo_position_2>=1.0d0) then
             i_azo_test = floor((azo_position_1 - 1.0d0) * Nm_azo)    !it is related to azo_position
             dffff = floor( ( Lz_2 + azo(j,i_azo_test)%z ) / dz ) + 1      !!!iz_azo(j,Nm)
             if (dffff < 1 .or.  dffff > 500)   then

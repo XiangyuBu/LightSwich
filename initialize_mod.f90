@@ -135,18 +135,18 @@ w_new = 0
 eta = 0
 eta_azo = 0
 np_r = 0
-inquire(file='wfield.txt',exist=alive) 
+inquire(file='w.txt',exist=alive) 
 if(alive) then                          
-    open(unit=42,file='wfield.txt',status='old')
+    open(unit=42,file='w.txt',status='old')
     read(42,*)
     print*, "read omega"
     do j=1,Nz
         do i=1,Nr
-            read(42,*) w(i,j), eta(i,j)
-        enddo
-    enddo
+            read(42,*) w(i,j)
+        end do
+    end do
     close(42)
-endif
+end if
 
 !!!! initialize the chains on the substrate!!!!!!have some questions!!!!!!!!!
 p_sphere_2 = csoL * Nm 
@@ -382,7 +382,7 @@ call checkpolymer (flag_c)
 
 open(22,file='iriz.dat')
 do j=1,N_chain
-	do i=1,Nm_pol
+	do i=0,Nm_pol
 	    r_radius = dsqrt( polymer(j,i)%x*polymer(j,i)%x + polymer(j,i)%y*polymer(j,i)%y )
     	ir(j,i) = floor( r_radius / dr ) + 1    
     	iz(j,i) = floor( ( Lz_2 + polymer(j,i)%z ) / dz ) + 1
@@ -392,7 +392,7 @@ end do
 close(22)
 open(22,file='iriz_azo.dat')
 do j=1,N_azo
-	do i=1,Nm_azo
+	do i=0,Nm_azo
         if ( azo(j,i)%x<=Lbox .and. azo(j,i)%y<=Lbox ) then
             x_r = azo(j,i)%x
             y_r = azo(j,i)%y             
@@ -429,7 +429,7 @@ do i=1,length
         j = j + 1
         call checkpolymer (flag_c)
         if (mod(j,50)==0) then
-        write(15,*) j, p_sphere_2
+        write(15,*) j, np_r
     	end if
     end if
  

@@ -46,7 +46,7 @@ if (change == 1) then
             end if
             DE2 = DE2 + w(ir(j,i), iz_temp(j,i)) - w(ir(j,i), iz(j,i))            
         end do
-!        DE3 = DE3 + eta(ir(j,Nm_pol), iz_temp(j,Nm_pol)) - eta(ir(j,Nm_pol), iz(j,Nm_pol))
+        DE3 = DE3 + eta(ir(j,Nm_pol), iz_temp(j,Nm_pol)) - eta(ir(j,Nm_pol), iz(j,Nm_pol))
     end do
     r = ran2(seed)
     if ( r < dexp ( - deltaS*DE2 ) )then       
@@ -81,6 +81,8 @@ DOUBLE PRECISION :: alpha, beta, angle, dotp
 DOUBLE PRECISION :: x_r, y_r
 DOUBLE PRECISION :: DE1, DE2, DE3
 
+DE1 = 0
+DE2 = 0
 change = 1
     !this is the big MC move
 jj = floor( ran2(seed)*0.9999999d0*(N_azo) ) + 1 ! random pickup the chain in [1,N_azo] to be rotated 
@@ -208,6 +210,8 @@ DOUBLE PRECISION :: unew(3), uold(3)
 DOUBLE PRECISION :: alpha, beta, angle, dotp    
 DOUBLE PRECISION :: DE1, DE2, DE3  
 
+DE1 = 0
+DE2 = 0
 change = 1
 
 do j  = 1,n_azo
@@ -276,15 +280,8 @@ if (change == 1) then
             - (polymer(jj,i+1)%z - 2*polymer(jj,i)%z + polymer(jj,i-1)%z)**2
            
     end if   !endif i
-
-    r_radius = dsqrt( new(1)%x*new(1)%x + new(1)%y*new(1)%y )
-
-    ir_temp(1) = floor( r_radius / dr ) + 1    
-    iz_temp(1) = floor( ( Lz_2 + new(1)%z ) / dz ) + 1
-
-    DE2 = w(ir_temp(1),iz_temp(1)) - w(ir(jj,i+1),iz(jj,i+1))    
     
-    do j = 2, length
+    do j = 1, length
  
         r_radius = dsqrt( new(j)%x*new(j)%x + new(j)%y*new(j)%y )
         ir_temp(j) = floor( r_radius / dr ) + 1
@@ -330,7 +327,6 @@ DOUBLE PRECISION :: unew(3),uold(3)
 DOUBLE PRECISION :: alpha, beta, angle, dotp
 DOUBLE PRECISION :: DE1, DE2, DE3 
 
-DE1 = 0
 change_1 = 1    
 cos_t=(2*ran2(seed)-1)*0.99999999d0
 sin_t=dsqrt(1.0d0-cos_t**2) 
@@ -366,7 +362,6 @@ if (change_1 == 0)then
 else
     change = 1
     DE2 = 0
-    DE3 = 0
     do j = 1, n_chain
         do i= 0, Nm_pol 
             r_radius = dsqrt( new(j,i)%x*new(j,i)%x + new(j,i)%y*new(j,i)%y )
