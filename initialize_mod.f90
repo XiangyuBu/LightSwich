@@ -193,7 +193,8 @@ end do
 !n_azo = n_graft_point - 2
 n_azo = 2*(n_graft_point - 2)
 
-print*,  n_azo,"number of azo_polymers"
+!print*,  n_azo,"number of azo_polymers"
+
 write(15,*) "number of azo_polymers",n_azo
  
 open(unit=45,file='graft_point.txt')
@@ -420,7 +421,7 @@ end do
 close(22)
 
 !print*,"initial OK"
-length = 1
+length = 0
 
 j=0
 do i=1,length
@@ -473,6 +474,7 @@ do i=1,length
 end do
 call checkpolymer (flag_c)
 print*, 1.0d0 * j/length,"rotate move"
+close(15)
 
 open(unit=50,file='azo_ini.txt')
 open(unit=52,file='pol_ini.txt')

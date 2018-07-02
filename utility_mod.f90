@@ -46,7 +46,7 @@ if (change == 1) then
             end if
             DE2 = DE2 + w(ir(j,i), iz_temp(j,i)) - w(ir(j,i), iz(j,i))            
         end do
-        DE3 = DE3 + eta(ir(j,Nm_pol), iz_temp(j,Nm_pol)) - eta(ir(j,Nm_pol), iz(j,Nm_pol))
+!        DE3 = DE3 + eta(ir(j,Nm_pol), iz_temp(j,Nm_pol)) - eta(ir(j,Nm_pol), iz(j,Nm_pol))
     end do
     r = ran2(seed)
     if ( r < dexp ( - deltaS*DE2 ) )then       
