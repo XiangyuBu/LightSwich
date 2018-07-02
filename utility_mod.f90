@@ -123,7 +123,7 @@ do j = i+1,Nm_azo
     r_radius = new(j)%x*new(j)%x + new(j)%y*new(j)%y &
              +(new(j)%z - np_r)*(new(j)%z - np_r)
 
-    if (r_sphere_2 > r_radius .or. abs(new(j)%z) > p_sphere_2  ) then
+    if (r_sphere_2 > r_radius .or. abs(new(j)%z) < p_sphere_2  ) then
         change = 0 
         exit
     end if
@@ -493,7 +493,7 @@ do j= 1, N_azo
            stop
         end if
 
-        if ( abs(azo(j,i)%z) > p_sphere_2) then
+        if ( abs(azo(j,i)%z) < p_sphere_2) then
            print*, "azomonoer",i,"on chain", j,"overlap substrate"
            print*,azo(j,i)%x
            print*,azo(j,i)%y

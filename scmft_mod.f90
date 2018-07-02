@@ -179,7 +179,7 @@ do n_iter = 1, Max_iter
 !stop "first scft"
 
     if ( mod(n_iter,5) == 0 ) then
-        open(unit=61,file='w.ome')
+        open(unit=61,file='w_temp.ome')
         do j = 1, Nz
             do i = 1, Nr
                 write(61,*) n_iter, w(i,j)

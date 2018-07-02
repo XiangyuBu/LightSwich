@@ -228,7 +228,7 @@ do j=1,n_azo/2
             unew(2) = azo(j,i-1)%y
             unew(3) = azo(j,i-1)%z
             r_radius = unew(1)*unew(1) + unew(2)*unew(2) + unew(3)*unew(3)
-            if (r_sphere_2 > r_radius .or. unew(3) > p_sphere_2 ) then     ! jiao die le
+            if (r_sphere_2 > r_radius .or. unew(3) < p_sphere_2 ) then     ! jiao die le
                 change = 0 
                 stop "initial wrong"
             else
@@ -242,7 +242,7 @@ do j=1,n_azo/2
             unew(2) = azo(j,i-1)%y + 0.5d0*dsqrt(3.0d0)
             unew(3) = azo(j,i-1)%z 
             r_radius = unew(1)*unew(1) + unew(2)*unew(2) + unew(3)*unew(3)
-            if (r_sphere_2 > r_radius .or. unew(3) > p_sphere_2 ) then     ! jiao die le
+            if (r_sphere_2 > r_radius .or. unew(3) < p_sphere_2 ) then     ! jiao die le
                 change = 0 
                 stop "initial wrong"
             else
@@ -263,7 +263,7 @@ do j=1,n_azo/2
                 unew(2) = azo(j,i-1)%y + axis(2)
     	      	unew(3) = azo(j,i-1)%z + axis(3) 
                 r_radius = unew(1)*unew(1) + unew(2)*unew(2) + unew(3)*unew(3)
-                if (r_sphere_2 > r_radius .or. unew(3) > p_sphere_2 ) then     ! jiao die le
+                if (r_sphere_2 > r_radius .or. unew(3) < p_sphere_2 ) then     ! jiao die le
                     change = 0 
                 else
             	    azo(j,i)%x = unew(1)
@@ -286,7 +286,7 @@ do j=(n_azo/2)+1,n_azo
             unew(2) = azo(j,i-1)%y
             unew(3) = azo(j,i-1)%z
             r_radius = unew(1)*unew(1) + unew(2)*unew(2) + unew(3)*unew(3)
-            if (r_sphere_2 > r_radius .or. unew(3) < -p_sphere_2 ) then     ! jiao die le
+            if (r_sphere_2 > r_radius .or. unew(3) > -p_sphere_2 ) then     ! jiao die le
                 change = 0 
                 stop "initial wrong"
             else
@@ -300,7 +300,7 @@ do j=(n_azo/2)+1,n_azo
             unew(2) = azo(j,i-1)%y + 0.5d0*dsqrt(3.0d0)
             unew(3) = azo(j,i-1)%z 
             r_radius = unew(1)*unew(1) + unew(2)*unew(2) + unew(3)*unew(3)
-            if (r_sphere_2 > r_radius .or. unew(3) < -p_sphere_2 ) then     ! jiao die le
+            if (r_sphere_2 > r_radius .or. unew(3) > -p_sphere_2 ) then     ! jiao die le
                 change = 0 
                 stop "initial wrong"
             else
@@ -322,7 +322,7 @@ do j=(n_azo/2)+1,n_azo
                 unew(2) = azo(j,i-1)%y + axis(2)
                 unew(3) = azo(j,i-1)%z + axis(3) 
                 r_radius = unew(1)*unew(1) + unew(2)*unew(2) + unew(3)*unew(3)
-                if (r_sphere_2 > r_radius .or. unew(3) < -p_sphere_2 ) then     ! jiao die le
+                if (r_sphere_2 > r_radius .or. unew(3) > -p_sphere_2 ) then     ! jiao die le
                     change = 0 
                 else
                     azo(j,i)%x = unew(1)
@@ -364,7 +364,7 @@ do j=1,N_chain
 			unew(2) = polymer(j,i-1)%y + axis(2)
     	   	unew(3) = polymer(j,i-1)%z + axis(3) 
             r_radius = unew(1)*unew(1) + unew(2)*unew(2) + unew(3)*unew(3)
-            if (r_sphere_2 > r_radius .or. abs(unew(3)) > p_sphere_2 ) then     ! jiao die le
+            if (r_sphere_2 > r_radius) then     ! jiao die le
                 change = 0 
             else
         		polymer(j,i)%x = unew(1)
@@ -430,9 +430,9 @@ do i=1,length
     if (change==1) then
         j = j + 1
         call checkpolymer (flag_c)
-        if (mod(j,50)==0) then
-        write(15,*) j, np_r
-    	end if
+!        if (mod(j,50)==0) then
+!            print*, np_r
+!    	end if
     end if
  
 end do
@@ -497,5 +497,7 @@ Deallocate(bond_vector)
 
 !call comformation_write()
 !write(*,*) "CREATED OK"
+
+!stop"initial is ok"
 
 end subroutine initialize          
