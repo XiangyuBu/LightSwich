@@ -135,9 +135,9 @@ w_new = 0
 eta = 0
 eta_azo = 0
 np_r = 0
-inquire(file='w.txt',exist=alive) 
+inquire(file='w.ome',exist=alive) 
 if(alive) then                          
-    open(unit=42,file='w.txt',status='old')
+    open(unit=42,file='w.ome',status='old')
     read(42,*)
     print*, "read omega"
     do j=1,Nz
@@ -390,6 +390,7 @@ do j=1,N_chain
 	end do   
 end do
 close(22)
+
 open(22,file='iriz_azo.dat')
 do j=1,N_azo
 	do i=0,Nm_azo
