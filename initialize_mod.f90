@@ -74,8 +74,8 @@ trial_move_rate(4) = 0.5d0
 !trial_move_rate(3) = 1.d0 for the position of sphere is fixed.
 
 
-!NMCs = 5*10**index_con
-NMCs = 3*10**index_con
+NMCs = 5*10**index_con
+!NMCs = 3*10**index_con
 
 
 !!!!!!!!!!!!!!!!!!

@@ -1,4 +1,4 @@
-0.4        !azo_position1     ! azo position / L from the free end
+1.4        !azo_position1     ! azo position / L from the free end
 1.4		   !azo_position2     ! azo position / L from the free end
 0.6d0      ! ratio_sigma grafting density ratio between substrate and sphere sigma_p/sigma_s
 1.5d0      ! csoL   distance between surfaces of substrate and center of sphere / L
